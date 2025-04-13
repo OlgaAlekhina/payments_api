@@ -2,10 +2,20 @@ import decimal
 from typing import List
 
 from sqlalchemy import String, DECIMAL, ForeignKey
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncAttrs
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
+from .config import get_db_url
 
-class Base(DeclarativeBase):
+
+DATABASE_URL = get_db_url()
+# создаем асинхронное подключение к БД, используя драйвер asyncpg
+engine = create_async_engine(DATABASE_URL)
+# создаем фабрику асинхронных сессий для выполнения транзакций в БД
+async_session_maker = async_sessionmaker(engine, expire_on_commit=False)
+
+
+class Base(AsyncAttrs, DeclarativeBase):
 	pass
 
 
