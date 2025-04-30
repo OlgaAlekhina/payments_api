@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, status
 from app.users.auth import get_password_hash
 from app.users.dao import UsersDAO
 
-from .auth import authenticate_user
+from .auth import authenticate_user, create_access_token
 from .schemas import UserAuth
 
 
