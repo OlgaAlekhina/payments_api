@@ -24,7 +24,7 @@ class User(Base):
 
 	id: Mapped[int] = mapped_column(primary_key=True)
 	email: Mapped[str] = mapped_column(String(30), unique=True)
-	password: Mapped[str] = mapped_column(String(30))
+	password: Mapped[str]
 	full_name: Mapped[str] = mapped_column(String(30))
 	accounts: Mapped[List["Account"]] = relationship(back_populates="user", cascade="all, delete", passive_deletes=True)
 	is_user: Mapped[bool] = mapped_column(default=True, server_default=text('true'), nullable=False)

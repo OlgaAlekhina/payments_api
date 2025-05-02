@@ -25,7 +25,7 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('email', sa.String(length=30), nullable=False),
     sa.Column('full_name', sa.String(length=30), nullable=False),
-    sa.Column('password', sa.String(length=30), nullable=False),
+    sa.Column('password', sa.String(), nullable=False),
     sa.Column('is_user', sa.Boolean(), server_default=sa.text('true'), nullable=False),
     sa.Column('is_admin', sa.Boolean(), server_default=sa.text('false'), nullable=False),
     sa.PrimaryKeyConstraint('id'),
@@ -46,11 +46,12 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
 
-    # вставляем тестовые данные в таблицу user
+    # вставляем тестовые данные в таблицу user с хэшированoными паролями
+    # реальные пароли - testpassword и somepassword
     op.bulk_insert(user_table,
    [
-       {'email': 'test_user@mail.ru', 'password': 'testpassword', 'full_name': 'Alex'},
-       {'email': 'admin@mail.ru', 'password': 'somepassword', 'full_name': 'Peter', 'is_user': False, 'is_admin': True},
+       {'email': 'test_user@mail.ru', 'password': '$2b$12$Vv/TsfnDOFb/ulaYWZmDHu8i8/P8mz05i1QVoS1Z9dQW7WgIX5h9i', 'full_name': 'Alex'},
+       {'email': 'admin@mail.ru', 'password': '$2b$12$aJajIY7MeeDAhKCPqUI6fuO6gGkCAYF0KFn1yqwlDK5YoiVSfL5YW', 'full_name': 'Peter', 'is_user': False, 'is_admin': True},
    ],
    multiinsert=False
    )
