@@ -1,6 +1,6 @@
 from passlib.context import CryptContext
 from pydantic import EmailStr
-from .service import find_user
+from .service import get_user_by_email
 from jose import jwt
 from datetime import datetime, timedelta, timezone
 from app.config import get_auth_data
@@ -21,7 +21,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 async def authenticate_user(email: EmailStr, password: str):
     """ Функция для аутентификации пользователя """
-    user = await find_user(email=email)
+    user = await get_user_by_email(email=email)
     if not user or verify_password(plain_password=password, hashed_password=user.password) is False:
         return None
     return user

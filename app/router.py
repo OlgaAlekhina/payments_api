@@ -2,8 +2,8 @@ from fastapi import APIRouter, HTTPException, status, Response
 from .auth import get_password_hash
 
 from .auth import authenticate_user, create_access_token
-from .schemas import UserAuth
-
+from .schemas import UserAuth, UserData
+from .service import get_user_by_id
 
 users_router = APIRouter(prefix='/users', tags=['Auth'])
 
@@ -17,3 +17,12 @@ async def auth_user(response: Response, user_data: UserAuth):
     access_token = create_access_token({"sub": str(user.id)})
     response.set_cookie(key="users_access_token", value=access_token, httponly=True)
     return {'access_token': access_token, 'refresh_token': None}
+
+
+@users_router.get("/", response_model = UserData, summary="Получение данных пользователя")
+async def get_user(user_id: int):
+    user = await get_user_by_id(user_id)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f'Пользователь с id = {user_id} не найден')
+    return {'id': user.id, 'email': user.email, 'full_name': user.full_name}
