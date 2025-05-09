@@ -26,7 +26,8 @@ class User(Base):
 	email: Mapped[str] = mapped_column(String(30), unique=True)
 	password: Mapped[str]
 	full_name: Mapped[str] = mapped_column(String(30))
-	accounts: Mapped[List["Account"]] = relationship(back_populates="user", cascade="all, delete", passive_deletes=True)
+	accounts: Mapped[List["Account"]] = relationship(back_populates="user", cascade="all, delete", passive_deletes=True,
+													 lazy='selectin')
 	is_user: Mapped[bool] = mapped_column(default=True, server_default=text('true'), nullable=False)
 	is_admin: Mapped[bool] = mapped_column(default=False, server_default=text('false'), nullable=False)
 
