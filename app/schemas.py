@@ -26,3 +26,15 @@ class AccountData(BaseModel):
 class UserAccounts(BaseModel):
     """ Модель для получения счетов пользователей """
     accounts: List[AccountData]
+
+
+class PaymentData(BaseModel):
+    """ Модель для получения информации о платеже """
+    payment_id: int
+    account_id: int
+    amount: Decimal = Field(..., description="Сумма платежа")
+
+
+class UserPayments(BaseModel):
+    """ Модель для получения платежей пользователей """
+    payments: List[PaymentData]

@@ -39,7 +39,8 @@ class Account(Base):
 	balance: Mapped[decimal.Decimal] = mapped_column(DECIMAL(10, 2))
 	user_id: Mapped[int] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"))
 	user: Mapped["User"] = relationship(back_populates="accounts")
-	payments: Mapped[List["Payment"]] = relationship(back_populates="account", cascade="all, delete", passive_deletes=True)
+	payments: Mapped[List["Payment"]] = relationship(back_populates="account", cascade="all, delete", passive_deletes=True,
+													 lazy='selectin')
 
 
 class Payment(Base):

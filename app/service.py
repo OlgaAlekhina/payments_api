@@ -29,3 +29,15 @@ async def get_accounts(user_id: int):
 		if not user:
 			raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Пользователь с id = {user_id} не найден")
 		return user.accounts
+
+
+async def get_payments(user_id: int):
+	""" Получение платежей пользователя из БД по id """
+	async with async_session_maker() as session:
+		query = select(User).filter_by(id=user_id)
+		result = await session.execute(query)
+		user = result.scalar_one_or_none()
+		if not user:
+			raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Пользователь с id = {user_id} не найден")
+		payments = [payment for account in user.accounts for payment in account.payments]
+		return payments

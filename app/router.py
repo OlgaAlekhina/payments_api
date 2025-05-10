@@ -2,8 +2,8 @@ from fastapi import APIRouter, HTTPException, status, Response
 from .auth import get_password_hash
 
 from .auth import authenticate_user, create_access_token
-from .schemas import UserAuth, UserData, UserAccounts
-from .service import get_user_by_id, get_accounts
+from .schemas import UserAuth, UserData, UserAccounts, UserPayments
+from .service import get_user_by_id, get_accounts, get_payments
 
 users_router = APIRouter(prefix='/users', tags=['Users'])
 
@@ -35,3 +35,12 @@ async def get_user_accounts(id: int):
     for account in accounts:
         response_data.append({"id": account.id, "balance": account.balance})
     return {"accounts": response_data}
+
+
+@users_router.get("/{id}/payments", response_model=UserPayments, summary="Получение платежей пользователя")
+async def get_user_payments(id: int):
+    payments = await get_payments(id)
+    response_data = []
+    for payment in payments:
+        response_data.append({"payment_id": payment.id, "account_id": payment.account_id, "amount": payment.amount})
+    return {"payments": response_data}
