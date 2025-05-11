@@ -19,7 +19,7 @@ class UserData(BaseModel):
 
 class AccountData(BaseModel):
     """ Модель для получения информации о счете """
-    id: int
+    id: str
     balance: Decimal = Field(..., description="Баланс счета")
 
 
@@ -31,7 +31,7 @@ class UserAccounts(BaseModel):
 class PaymentData(BaseModel):
     """ Модель для получения информации о платеже """
     payment_id: int
-    account_id: int
+    account_id: str
     amount: Decimal = Field(..., description="Сумма платежа")
 
 

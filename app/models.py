@@ -35,7 +35,7 @@ class User(Base):
 class Account(Base):
 	__tablename__ = "account"
 
-	id: Mapped[int] = mapped_column(primary_key=True)
+	id: Mapped[str] = mapped_column(String(10), primary_key=True)
 	balance: Mapped[decimal.Decimal] = mapped_column(DECIMAL(10, 2))
 	user_id: Mapped[int] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"))
 	user: Mapped["User"] = relationship(back_populates="accounts")
@@ -48,5 +48,5 @@ class Payment(Base):
 
 	id: Mapped[int] = mapped_column(primary_key=True)
 	amount: Mapped[decimal.Decimal] = mapped_column(DECIMAL(10, 2))
-	account_id: Mapped[int] = mapped_column(ForeignKey("account.id", ondelete="CASCADE"))
+	account_id: Mapped[str] = mapped_column(ForeignKey("account.id", ondelete="CASCADE"))
 	account: Mapped["Account"] = relationship(back_populates="payments")

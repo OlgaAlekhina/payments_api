@@ -32,7 +32,7 @@ def upgrade() -> None:
     sa.UniqueConstraint('email')
     )
     account_table = op.create_table('account',
-    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('id', sa.String(length=10), nullable=False),
     sa.Column('balance', sa.DECIMAL(precision=10, scale=2), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ondelete='CASCADE'),
@@ -41,7 +41,7 @@ def upgrade() -> None:
     op.create_table('payment',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('amount', sa.DECIMAL(precision=10, scale=2), nullable=False),
-    sa.Column('account_id', sa.Integer(), nullable=False),
+    sa.Column('account_id', sa.String(), nullable=False),
     sa.ForeignKeyConstraint(['account_id'], ['account.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )
@@ -64,7 +64,7 @@ def upgrade() -> None:
     # вставляем данные в таблицу account
     op.bulk_insert(account_table,
    [
-       {'balance': 0, 'user_id': user_id},
+       {'id': '5171037693', 'balance': 20000, 'user_id': user_id},
    ]
    )
     # ### end Alembic commands ###
