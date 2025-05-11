@@ -1,6 +1,8 @@
 from fastapi import HTTPException, status
 from pydantic import EmailStr
-from sqlalchemy import select
+from sqlalchemy import select, insert
+from sqlalchemy.exc import SQLAlchemyError
+
 from .models import async_session_maker, User
 
 
@@ -41,3 +43,18 @@ async def get_payments(user_id: int):
 			raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Пользователь с id = {user_id} не найден")
 		payments = [payment for account in user.accounts for payment in account.payments]
 		return payments
+
+
+async def add_user(email: EmailStr, password: str, full_name: str, is_user: bool):
+	""" Добавление нового пользователя в БД """
+	async with async_session_maker() as session:
+		async with session.begin():
+			new_instance = User(email=email, password=password, full_name=full_name, is_user=is_user)
+			session.add(new_instance)
+			try:
+				await session.commit()
+			except SQLAlchemyError as e:
+				await session.rollback()
+				raise e
+			return new_instance
+

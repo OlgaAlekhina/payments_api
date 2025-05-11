@@ -10,6 +10,13 @@ class UserAuth(BaseModel):
     password: str = Field(..., min_length=8, max_length=30, description="Пароль длиной 8-30 символов")
 
 
+class UserAdd(BaseModel):
+    """ Модель для добавления пользователей """
+    email: EmailStr = Field(..., description="Электронная почта")
+    password: str = Field(..., min_length=8, max_length=30, description="Пароль длиной 8-30 символов")
+    full_name: str = Field(..., min_length=2, max_length=30, description="Полное имя длиной 2-30 символов")
+
+
 class UserData(BaseModel):
     """ Модель для получения личных данных пользователей """
     id: int

@@ -2,8 +2,8 @@ from fastapi import APIRouter, HTTPException, status, Response
 from .auth import get_password_hash
 
 from .auth import authenticate_user, create_access_token
-from .schemas import UserAuth, UserData, UserAccounts, UserPayments
-from .service import get_user_by_id, get_accounts, get_payments
+from .schemas import UserAuth, UserData, UserAccounts, UserPayments, UserAdd
+from .service import get_user_by_id, get_accounts, get_payments, get_user_by_email, add_user
 
 users_router = APIRouter(prefix='/users', tags=['Users'])
 
@@ -44,3 +44,15 @@ async def get_user_payments(id: int):
     for payment in payments:
         response_data.append({"payment_id": payment.id, "account_id": payment.account_id, "amount": payment.amount})
     return {"payments": response_data}
+
+
+@users_router.post("/", summary="Добавление пользователей")
+async def create_new_user(user_data: UserAdd):
+    user = await get_user_by_email(user_data.email)
+    if user:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='Пользователь с такими email уже существует')
+    user_dict = user_data.model_dump()
+    user_dict['password'] = get_password_hash(user_data.password)
+    user_dict['is_user'] = True
+    result = await add_user(**user_dict)
+    return {'message': 'Пользователь успешно зарегистрирован'}
