@@ -1,5 +1,5 @@
-from fastapi import APIRouter, HTTPException, status, Response
-from .auth import get_password_hash
+from fastapi import APIRouter, HTTPException, status, Response, Depends
+from .auth import get_password_hash, get_current_user
 
 from .auth import authenticate_user, create_access_token
 from .schemas import UserAuth, UserData, UserAccounts, UserPayments, UserAdd
@@ -56,3 +56,8 @@ async def create_new_user(user_data: UserAdd):
     user_dict['is_user'] = True
     result = await add_user(**user_dict)
     return {'message': 'Пользователь успешно зарегистрирован'}
+
+
+@users_router.get("/me/")
+async def get_me(user_data: UserData = Depends(get_current_user)):
+    return user_data
