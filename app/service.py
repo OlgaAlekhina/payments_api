@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status
 from pydantic import EmailStr
-from sqlalchemy import select, insert
+from sqlalchemy import select, insert, delete
 from sqlalchemy.exc import SQLAlchemyError
 
 from .models import async_session_maker, User
@@ -20,6 +20,17 @@ async def get_user_by_id(user_id: int):
 		query = select(User).filter_by(id=user_id)
 		result = await session.execute(query)
 		return result.scalar_one_or_none()
+
+
+async def delete_user(user_id: int):
+	""" Удаление пользователя из БД по id """
+	async with async_session_maker() as session:
+		query = delete(User).filter_by(id=user_id)
+		try:
+			await session.execute(query)
+		except SQLAlchemyError as e:
+			raise e
+		return 'OK'
 
 
 async def get_accounts(user_id: int):

@@ -28,6 +28,16 @@ async def get_user(id: int):
     return {'id': user.id, 'email': user.email, 'full_name': user.full_name}
 
 
+@users_router.delete("/{id}", response_model=UserData, summary="Удаление пользователя")
+async def delete_user(id: int):
+    user = await delete_user(id)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f'Пользователь с id = {id} не найден')
+    return {'OK'}
+
+
+
 @users_router.get("/{id}/accounts", response_model=UserAccounts, summary="Получение счетов пользователя")
 async def get_user_accounts(id: int):
     accounts = await get_accounts(id)
